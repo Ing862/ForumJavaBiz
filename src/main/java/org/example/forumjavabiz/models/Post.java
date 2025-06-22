@@ -1,4 +1,4 @@
-package org.example.Models;
+package org.example.forumjavabiz.models;
 
 import java.time.LocalDateTime;
 

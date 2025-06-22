@@ -1,4 +1,4 @@
-package org.example.Models;
+package org.example.forumjavabiz.models;
 
 public class User {
     private Long id;

@@ -1,7 +1,8 @@
-package org.example.Repository;
+package org.example.forumjavabiz.repository;
 
-import org.example.Models.Post;
-import org.example.Models.User;
+import org.example.forumjavabiz.models.Post;
+import org.example.forumjavabiz.models.User;
+import org.example.forumjavabiz.repository.PostRepository;
 
 import java.util.List;
 

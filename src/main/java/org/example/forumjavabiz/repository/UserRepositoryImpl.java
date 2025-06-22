@@ -1,6 +1,6 @@
-package org.example.Repository;
+package org.example.forumjavabiz.repository;
 
-import org.example.Models.User;
+import org.example.forumjavabiz.models.User;
 
 import java.util.ArrayList;
 import java.util.List;

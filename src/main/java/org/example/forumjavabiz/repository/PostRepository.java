@@ -1,6 +1,6 @@
-package org.example.Repository;
+package org.example.forumjavabiz.repository;
 
-import org.example.Models.Post;
+import org.example.forumjavabiz.models.Post;
 import java.util.List;
 
 // interfejs DAO
