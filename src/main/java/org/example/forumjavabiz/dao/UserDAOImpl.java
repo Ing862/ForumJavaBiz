@@ -1,11 +1,11 @@
-package org.example.forumjavabiz.repository;
+package org.example.forumjavabiz.dao;
 
-import org.example.forumjavabiz.models.User;
+import org.example.forumjavabiz.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRepositoryImpl implements UserRepository {
+public class UserDAOImpl implements UserDAO {
     private ArrayList<User> accounts = new ArrayList<>();
     private long idgen = 0;
 

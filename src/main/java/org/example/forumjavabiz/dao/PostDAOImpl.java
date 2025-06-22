@@ -1,13 +1,11 @@
-package org.example.forumjavabiz.repository;
+package org.example.forumjavabiz.dao;
 
-import org.example.forumjavabiz.models.Post;
-import org.example.forumjavabiz.models.User;
-import org.example.forumjavabiz.repository.PostRepository;
+import org.example.forumjavabiz.entity.Post;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostRepositoryImpl implements PostRepository {
+public class PostDAOImpl implements PostDAO {
     private ArrayList<Post> posts = new ArrayList<>();
     private long idgen = 0;
 

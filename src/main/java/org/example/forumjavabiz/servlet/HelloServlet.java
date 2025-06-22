@@ -1,4 +1,4 @@
-package org.example.forumjavabiz;
+package org.example.forumjavabiz.servlet;
 
 import java.io.*;
 import jakarta.servlet.http.*;

@@ -1,10 +1,18 @@
-package org.example.forumjavabiz.models;
+package org.example.forumjavabiz.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
+    @Id @GeneratedValue
     private Long id;
+    @Column(unique = true)
     private String username;
     private String password; //?????
     private String role;
+
+    public User() {}
 
     public User(Long id, String role, String password, String username) {
         this.id = id;
