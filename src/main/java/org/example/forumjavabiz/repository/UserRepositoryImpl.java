@@ -25,16 +25,8 @@ public class UserRepositoryImpl implements UserRepository {
         accounts.add(a);
     }
 
-    public void edit(Long id, String username, String password, String role){
-        if (id == null || username == null || password == null || role == null) {
-            throw new NullPointerException();
-        }
-
-        User a = findById(id);
-
-        a.setUsername(username);
-        a.setPassword(password);
-        a.setRole(role);
+    public void edit(User a){
+        // do dokończenia
     }
 
     public void remove(User user) {

@@ -5,7 +5,7 @@ import java.util.List;
 
 // interfejs DAO
 public interface PostRepository {
-    void add(Post post);
+    void add(String title, String content, Long creatorId, Long topicId);
     void delete(Post post);
     void edit(Post post);
     Post findById(Long id);
