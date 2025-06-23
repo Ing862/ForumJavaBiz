@@ -22,6 +22,7 @@ public class RegisterServlet extends HttpServlet {
         User user = new User();
         user.setUsername(username);
         user.setPassword(password); // w produkcji -> haszuj!
+        user.setRole("USER");
 
         userDAO.register(user);
 

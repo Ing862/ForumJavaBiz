@@ -3,7 +3,24 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
              version="3.2">
-  <persistence-unit name="default">
+  <persistence-unit name="default" transaction-type="JTA">
+    <!-- Źródło danych skonfigurowane w WildFly -->
+    <jta-data-source>java:/PostgresDS</jta-data-source>
 
+    <!-- Klasy encji (opcjonalnie, jeśli nie używasz automatycznego wykrywania) -->
+    <!-- <class>com.example.MyEntity</class> -->
+
+    <properties>
+      <!-- Dialekt bazy danych PostgreSQL -->
+      <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+
+      <!-- Formatowanie i logowanie SQL -->
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.format_sql" value="true"/>
+
+      <!-- Strategia tworzenia schematu: update / create / validate / none -->
+      <property name="jakarta.persistence.schema-generation.database.action" value="update"/>
+    </properties>
   </persistence-unit>
 </persistence>
