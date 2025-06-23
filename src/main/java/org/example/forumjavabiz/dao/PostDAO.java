@@ -1,10 +1,10 @@
-package org.example.forumjavabiz.repository;
+package org.example.forumjavabiz.dao;
 
-import org.example.forumjavabiz.models.Post;
+import org.example.forumjavabiz.entity.Post;
 import java.util.List;
 
 // interfejs DAO
-public interface PostRepository {
+public interface PostDAO {
     void add(String title, String content, Long creatorId, Long topicId);
     void delete(Post post);
     void edit(Post post);
