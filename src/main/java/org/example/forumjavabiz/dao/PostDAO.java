@@ -39,15 +39,15 @@ public class PostDAO {
     }
 
     // Lista postów po ID tematu
-//    public List<Post> findByTopicId(Long topicId) {
-//        return em.createQuery("SELECT p FROM Post p WHERE p.topic.id = :topicId ORDER BY p.createdAt DESC", Post.class)
-//                .setParameter("topicId", topicId)
-//                .getResultList();
-//    }
+    public List<Post> findByTopicId(Long topicId) {
+        return em.createQuery("SELECT p FROM Post p WHERE p.topic.id = :topicId ORDER BY p.createdAt DESC", Post.class)
+                .setParameter("topicId", topicId)
+                .getResultList();
+    }
 
     // Lista postów po ID użytkownika (autora)
     public List<Post> findByCreatorId(Long userId) {
-        return em.createQuery("SELECT p FROM Post p WHERE p.creator.id = :userId ORDER BY p.createdAt DESC", Post.class)
+        return em.createQuery("SELECT p FROM Post p WHERE p.creator.user_id = :userId ORDER BY p.createdAt DESC", Post.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }

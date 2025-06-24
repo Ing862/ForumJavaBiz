@@ -8,27 +8,29 @@ import java.time.LocalDateTime;
 @Table(name = "posts")
 public class Post {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String content;
     private LocalDateTime createdAt;
-    @ManyToOne(optional = false) // foreign key do User
+    @ManyToOne(optional = false) // klucz obcy do User
     @JoinColumn(name = "user_id", nullable = false)
     private User creator;
-    private Long topicId;
+    @ManyToOne(optional = false) // klucz obcy do Topic
+    @JoinColumn(name = "topic_id", nullable = false)
+    private Topic topic;
 
     public Post() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Post(Long id, String title, String content, User creator, Long topicId) {
+    public Post(Long id, String title, String content, User creator, Topic topic) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdAt = LocalDateTime.now();
         this.creator = creator;
-        this.topicId = topicId;
+        this.topic = topic;
     }
 
     public User getCreator() {
@@ -67,16 +69,20 @@ public class Post {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public void setTimeOfCreation() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Long getTopicId() {
-        return topicId;
+    public Topic getTopic() {
+        return topic;
     }
 
-    public void setTopicId(Long topicId) {
-        this.topicId = topicId;
+    public void setTopic(Topic topic) {
+        this.topic = topic;
     }
 }
 

@@ -5,8 +5,9 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "users")
 public class User {
-    @Id @GeneratedValue
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long user_id;
     @Column(unique = true)
     private String username;
     private String password; //?????
@@ -15,25 +16,25 @@ public class User {
     public User() {}
 
     public User(Long id, String role, String password, String username) {
-        this.id = id;
+        this.user_id = id;
         this.role = role;
         this.password = password;
         this.username = username;
     }
 
     public User(User user) {
-        this.id = user.getId();
+        this.user_id = user.getId();
         this.role = user.getRole();
         this.password = user.getPassword();
         this.username = user.getUsername();
     }
 
     public Long getId() {
-        return id;
+        return user_id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.user_id = id;
     }
 
     public String getUsername() {
