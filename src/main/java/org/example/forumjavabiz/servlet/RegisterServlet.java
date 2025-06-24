@@ -5,7 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.forumjavabiz.dao.UserDAOImpl;
+import org.example.forumjavabiz.dao.UserDAO;
 import org.example.forumjavabiz.entity.User;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 @WebServlet(name = "registerServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
     @EJB
-    private UserDAOImpl userDAO;
+    private UserDAO userDAO;
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, IOException {
         String username = req.getParameter("username");

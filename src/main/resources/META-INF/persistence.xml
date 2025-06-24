@@ -20,7 +20,7 @@
       <property name="hibernate.format_sql" value="true"/>
 
       <!-- Strategia tworzenia schematu: update / create / validate / none -->
-      <property name="jakarta.persistence.schema-generation.database.action" value="update"/>
+<!--      <property name="jakarta.persistence.schema-generation.database.action" value="update"/>-->
     </properties>
   </persistence-unit>
 </persistence>
