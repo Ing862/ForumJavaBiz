@@ -11,19 +11,28 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    private String description;
     @ManyToOne()
-    @JoinColumn(name = "user_id", nullable = false)
-    private User creator;
+    @JoinColumn(name = "author", nullable = false)
+    private User author;
     private LocalDateTime creationDate;
 
     public Topic() {
         this.creationDate = LocalDateTime.now();
     }
 
-    public Topic(Long id, String title, User creator, LocalDateTime creationDate) {
+    public Topic(String title, String description, User author) {
+        this.title = title;
+        this.description = description;
+        this.author = author;
+        this.creationDate = LocalDateTime.now();
+    }
+
+    public Topic(Long id, String title, String description, User author, LocalDateTime creationDate) {
         this.id = id;
         this.title = title;
-        this.creator = creator;
+        this.description = description;
+        this.author = author;
         this.creationDate = creationDate;
     }
 
@@ -43,12 +52,20 @@ public class Topic {
         this.title = title;
     }
 
-    public User getCreator() {
-        return creator;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCreator(User creator) {
-        this.creator = creator;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public LocalDateTime getCreationDate() {

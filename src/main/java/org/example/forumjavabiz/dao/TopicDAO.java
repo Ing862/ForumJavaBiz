@@ -4,6 +4,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import org.example.forumjavabiz.entity.Post;
 import org.example.forumjavabiz.entity.Topic;
 
 import java.util.List;
@@ -12,6 +13,17 @@ import java.util.List;
 public class TopicDAO {
     @PersistenceContext
     private EntityManager em;
+
+    public Topic saveOrUpdate(Topic topic) {
+        if(topic.getId()==null) {
+            em.persist(topic);
+        }
+        else {
+            topic = em.merge(topic);
+        }
+        return topic;
+    }
+
 
     // Zapis nowego tematu
     public void createTopic(Topic topic) {
