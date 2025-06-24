@@ -24,6 +24,14 @@ public class Post {
         this.createdAt = LocalDateTime.now();
     }
 
+    public Post(String title, String content, User author) {
+        this.title = title;
+        this.content = content;
+        this.author = author;
+        this.createdAt = LocalDateTime.now();
+        this.topic = null; // zmienić kiedy pojawią się tematy
+    }
+
     public Post(Long id, String title, String content, User author, Topic topic) {
         this.id = id;
         this.title = title;
