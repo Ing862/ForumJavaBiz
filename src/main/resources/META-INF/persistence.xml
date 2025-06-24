@@ -21,6 +21,8 @@
 
       <!-- Strategia tworzenia schematu: update / create / validate / none -->
 <!--      <property name="jakarta.persistence.schema-generation.database.action" value="update"/>-->
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+
     </properties>
   </persistence-unit>
 </persistence>

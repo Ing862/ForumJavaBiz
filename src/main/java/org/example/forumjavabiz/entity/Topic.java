@@ -20,7 +20,8 @@ public class Topic {
         this.creationDate = LocalDateTime.now();
     }
 
-    public Topic(String title, User creator, LocalDateTime creationDate) {
+    public Topic(Long id, String title, User creator, LocalDateTime creationDate) {
+        this.id = id;
         this.title = title;
         this.creator = creator;
         this.creationDate = creationDate;

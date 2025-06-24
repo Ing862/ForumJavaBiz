@@ -15,7 +15,7 @@ public class Post {
     private LocalDateTime createdAt;
     @ManyToOne(optional = false) // klucz obcy do User
     @JoinColumn(name = "user_id", nullable = false)
-    private User creator;
+    private User author;
     @ManyToOne(optional = false) // klucz obcy do Topic
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
@@ -24,21 +24,21 @@ public class Post {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Post(Long id, String title, String content, User creator, Topic topic) {
+    public Post(Long id, String title, String content, User author, Topic topic) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdAt = LocalDateTime.now();
-        this.creator = creator;
+        this.author = author;
         this.topic = topic;
     }
 
-    public User getCreator() {
-        return creator;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setCreator(User creator) {
-        this.creator = creator;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public Long getId() {

@@ -1,4 +1,4 @@
-package org.example.forumjavabiz.servlet;
+package org.example.forumjavabiz.controller;
 
 import jakarta.ejb.EJB;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,7 +11,7 @@ import org.example.forumjavabiz.entity.User;
 import java.io.IOException;
 
 @WebServlet(name = "registerServlet", value = "/register")
-public class RegisterServlet extends HttpServlet {
+public class RegisterController extends HttpServlet {
     @EJB
     private UserDAO userDAO;
 
