@@ -10,23 +10,23 @@ public class User {
     private Long user_id;
     @Column(unique = true)
     private String username;
-    private String password; //?????
+    private String password;
     private String role;
 
     public User() {}
 
-    public User(Long id, String role, String password, String username) {
+    public User(Long id, String username, String password, String role) {
         this.user_id = id;
-        this.role = role;
-        this.password = password;
         this.username = username;
+        this.password = password;
+        this.role = role;
     }
 
     public User(User user) {
         this.user_id = user.getId();
-        this.role = user.getRole();
-        this.password = user.getPassword();
         this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.role = user.getRole();
     }
 
     public Long getId() {

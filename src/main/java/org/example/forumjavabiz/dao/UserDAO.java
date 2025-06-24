@@ -54,4 +54,17 @@ public class UserDAO {
             return null;
         }
     }
+
+    public boolean usernameExists(String username) {
+        return em.createQuery("SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class)
+                .setParameter("username", username)
+                .getSingleResult() > 0;
+    }
+
+    // TODO: Dodać wylogowanie
+
+//    public boolean checkPassword(User user, String inputPassword) {
+//        return user != null && user.getPassword().equals(inputPassword)
+//
+//    }
 }

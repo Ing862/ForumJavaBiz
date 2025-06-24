@@ -1,6 +1,7 @@
 package org.example.forumjavabiz.controller;
 
 import jakarta.ejb.EJB;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,32 +11,30 @@ import org.example.forumjavabiz.entity.User;
 
 import java.io.IOException;
 
-@WebServlet(name = "loginServlet", value = "/login")
+@WebServlet(name = "loginServlet",
+            urlPatterns = "/user/login")
 public class LoginController extends HttpServlet {
     @EJB
     private UserDAO userDAO;
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
-        User user = userDAO.findByUsernameAndPassword(username, password);
+        User user = userDAO.findByUsernameAndPassword(username, password); // Sprawdza poprawność nazwa użytkownika + hasło
 
-        if (user != null) {
-            req.getSession().setAttribute("user", user);
-            try {
-                resp.sendRedirect("index.jsp");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            resp.sendRedirect("login.jsp?error=true");
+        if (user != null) { // Logowanie poprawne
+            request.getSession().setAttribute("loggedUser", user); // Tworzy sesje użytkownika
+            response.sendRedirect(request.getContextPath() + "/index.jsp"); // Przekierowuje na strone index
+        } else { // Błąd logowania
+            request.setAttribute("loginError", "Invalid login or password");
+            request.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(request, response);
         }
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.sendRedirect("login.jsp");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(request, response);
     }
 }
 

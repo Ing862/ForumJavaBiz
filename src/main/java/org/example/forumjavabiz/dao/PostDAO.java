@@ -12,6 +12,16 @@ public class PostDAO {
     @PersistenceContext
     private EntityManager em;
 
+    public Post saveOrUpdate(Post post) {
+        if(post.getId()==null) {
+            em.persist(post);
+        }
+        else {
+            post = em.merge(post);
+        }
+        return post;
+    }
+
     public void save(Post post) {
         em.persist(post);
     }

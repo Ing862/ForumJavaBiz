@@ -17,7 +17,7 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User author;
     @ManyToOne(optional = false) // klucz obcy do Topic
-    @JoinColumn(name = "topic_id", nullable = false)
+    @JoinColumn(name = "topic_id")//, nullable = false)
     private Topic topic;
 
     public Post() {

@@ -1,6 +1,7 @@
 package org.example.forumjavabiz.controller;
 
 import jakarta.ejb.EJB;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,27 +11,32 @@ import org.example.forumjavabiz.entity.User;
 
 import java.io.IOException;
 
-@WebServlet(name = "registerServlet", value = "/register")
+@WebServlet(name = "registerServlet", urlPatterns = "/user/register")
 public class RegisterController extends HttpServlet {
     @EJB
     private UserDAO userDAO;
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password); // w produkcji -> haszuj!
+        user.setPassword(password); // dodać haszowanie
         user.setRole("USER");
 
-        userDAO.register(user);
+        if (!userDAO.usernameExists("anna")) {
+            userDAO.register(user);
+        } else {
+            // komunikat: użytkownik już istnieje
+        }
 
-        resp.sendRedirect("login.jsp");
+        request.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(request, response);
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.sendRedirect("register.jsp");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/views/user/register.jsp").forward(request, response);
+
     }
 }
