@@ -4,7 +4,6 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import org.example.forumjavabiz.entity.Post;
 import org.example.forumjavabiz.entity.Topic;
 
 import java.util.List;
@@ -23,7 +22,6 @@ public class TopicDAO {
         }
         return topic;
     }
-
 
     // Zapis nowego tematu
     public void createTopic(Topic topic) {
@@ -56,7 +54,7 @@ public class TopicDAO {
     // Lista tematów po autorze
     public List<Topic> findByCreatorId(Long userId) {
         return em.createQuery(
-                        "SELECT t FROM Topic t WHERE t.creator.user_id = :userId ORDER BY t.creationDate DESC", Topic.class)
+                        "SELECT t FROM Topic t WHERE t.author.user_id = :userId ORDER BY t.creationDate DESC", Topic.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }

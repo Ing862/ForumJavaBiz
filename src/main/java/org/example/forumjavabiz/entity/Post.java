@@ -17,19 +17,19 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User author;
     @ManyToOne(optional = false) // klucz obcy do Topic
-    @JoinColumn(name = "topic_id")//, nullable = false)
+    @JoinColumn(name = "topic_id")//, nullable = true)
     private Topic topic;
 
     public Post() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Post(String title, String content, User author) {
+    public Post(String title, String content, User author, Topic topic) {
         this.title = title;
         this.content = content;
         this.author = author;
         this.createdAt = LocalDateTime.now();
-        this.topic = null; // zmienić kiedy pojawią się tematy
+        this.topic = topic; // zmienić kiedy pojawią się tematy
     }
 
     public Post(Long id, String title, String content, User author, Topic topic) {

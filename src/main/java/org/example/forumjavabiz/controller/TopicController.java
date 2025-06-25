@@ -36,8 +36,12 @@ public class TopicController extends HttpServlet {
             case "/topic/edit": // Tworzenie lub edycja tematu (formularz)
                 handleGetEditTopicGet(request, response);
                 break;
-            case "/topic/remove": // Usunięcie tematu
-                handleTopicRemove(request, response);
+            case "/topic/remove":
+                if (pathInfo != null && pathInfo.length() > 1) {
+                    handleTopicRemoveConfirm(request, response);
+                } else {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Topic ID is null.");
+                }
                 break;
             case "/topic/view": // Wyświetlenie konkretnego tematu
                 if (pathInfo != null && pathInfo.length() > 1) {
@@ -53,17 +57,16 @@ public class TopicController extends HttpServlet {
 
     private void handleTopicList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Topic> topics = topicDAO.findAll();
-        request.setAttribute("postList", topics);
-        // TODO: Przekierowanie do listy tematów
-        //request.getRequestDispatcher("/WEB-INF/views/post/post_list.jsp").forward(request, response);
+        request.setAttribute("topicList", topics);
+        request.getRequestDispatcher("/WEB-INF/views/topic/topic_list.jsp").forward(request, response);
     }
 
     private void handleTopicView(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo(); // np. "/5"
 
         try {
-            Long postId = Long.parseLong(pathInfo.substring(1));
-            Topic topic = topicDAO.findById(postId);
+            Long topicId = Long.parseLong(pathInfo.substring(1));
+            Topic topic = topicDAO.findById(topicId);
 
             if (topic == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Topic was not found");
@@ -71,8 +74,7 @@ public class TopicController extends HttpServlet {
             }
 
             request.setAttribute("topic", topic);
-            // TODO: Przekierowanie na widok tematu
-            //request.getRequestDispatcher("/WEB-INF/views/post/post_view.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/topic/topic_view.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Wrong topic ID.");
@@ -101,8 +103,7 @@ public class TopicController extends HttpServlet {
             request.setAttribute("author", topic.getAuthor());
         }
 
-        // TODO: Przekierowanie na form tematu
-//        request.getRequestDispatcher("/WEB-INF/views/post/post_form.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/topic/topic_form.jsp").forward(request, response);
     }
 
     private void handleTopicRemove(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -121,15 +122,36 @@ public class TopicController extends HttpServlet {
         }
 
         topicDAO.deleteTopic(topic);
-        // TODO: Przekierowanie na listę tematów
-        //response.sendRedirect(request.getContextPath() + "/post/list");
+        response.sendRedirect(request.getContextPath() + "/topic/list");
     }
+
+    private void handleTopicRemoveConfirm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo(); // np. "/5"
+        Long id = parseId(pathInfo);
+
+        if (id == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Wrong topic ID.");
+            return;
+        }
+
+        Topic topic = topicDAO.findById(id);
+        if (topic == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Topic was not found.");
+            return;
+        }
+
+        request.setAttribute("topic", topic);
+        request.getRequestDispatcher("/WEB-INF/views/topic/topic_remove_confirm.jsp").forward(request, response);
+    }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
 
-        if ("/topic/edit".equals(path)) {
+        if ("/topic/remove".equals(path)) {
+            handleTopicRemove(request, response);
+        } else if ("/topic/edit".equals(path)) {
             handleTopicEditPost(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -149,8 +171,7 @@ public class TopicController extends HttpServlet {
             request.setAttribute("errors", fieldToError);
             request.setAttribute("title", request.getParameter("title"));
             request.setAttribute("description", request.getParameter("description"));
-            // TODO: Przekierowanie na form tematu
-            //request.getRequestDispatcher("/WEB-INF/views/post/post_form.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/topic/topic_form.jsp").forward(request, response);
             return;
         }
 
@@ -172,8 +193,7 @@ public class TopicController extends HttpServlet {
         } else {
             topicDAO.saveOrUpdate(topic);
         }
-        // TODO: Przekierowanie na listę tematów
-        //response.sendRedirect(request.getContextPath() + "/post/list");
+        response.sendRedirect(request.getContextPath() + "/topic/list");
     }
 
     private Topic parseTopic(Map<String, String[]> paramToValue, Map<String, String> fieldToError, User author) {

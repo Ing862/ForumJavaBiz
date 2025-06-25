@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.forumjavabiz.dao.PostDAO;
 import org.example.forumjavabiz.entity.Post;
+import org.example.forumjavabiz.entity.Topic;
 import org.example.forumjavabiz.entity.User;
 
 import java.io.IOException;
@@ -185,6 +186,8 @@ public class PostController extends HttpServlet {
         String title = (titleArr != null && titleArr.length > 0) ? titleArr[0].trim() : null;
         String content = (contentArr != null && contentArr.length > 0) ? contentArr[0].trim() : null;
 
+        Topic topic = new Topic();
+
         if (title == null || title.isEmpty()) {
             fieldToError.put("title", "Tytuł jest wymagany.");
         }
@@ -199,7 +202,7 @@ public class PostController extends HttpServlet {
             return null;
         }
 
-        return new Post(title, content, author);
+        return new Post(title, content, author, topic);
     }
 
     private Long parseId(String pathInfo) {

@@ -3,30 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%--<html>--%>
-<%--<head>--%>
-<%--  <title>Szczegóły posta</title>--%>
-<%--</head>--%>
-<%--<body>--%>
-<%--<h1>${post.title}</h1>--%>
-
-<%--<p>--%>
-<%--  <strong>Autor:</strong> ${fn:escapeXml(post.author)}<br/>--%>
-<%--  <strong>Data:</strong> <fmt:formatDate value="${fn:escapeXml(post.createdAt)}" pattern="yyyy-MM-dd HH:mm" />--%>
-<%--  <strong>Topic:</strong> ${fn:escapeXml(post.topic)}<br/>--%>
-<%--</p>--%>
-
-<%--<hr/>--%>
-
-<%--<div>--%>
-<%--  ${fn:escapeXml(post.content)}--%>
-<%--</div>--%>
-
-<%--<hr/>--%>
-
-<%--<p><a href="${pageContext.request.contextPath}/post/list">← Powrót do listy postów</a></p>--%>
-<%--</body>--%>
-<%--</html>--%>
 <html>
 <head>
   <title>Podgląd posta</title>
@@ -35,6 +11,21 @@
 <h1>${post.title}</h1>
 <p><strong>Autor:</strong> ${post.author.username}</p>
 <p>${post.content}</p>
+
+<ul>
+  <c:forEach var="post" items="${postList}">
+    <li>
+      <strong>${post.title}</strong> - ${post.author.username}
+      <br/>
+      <a href="${pageContext.request.contextPath}/post/view/${post.id}">Zobacz</a> |
+        <%--      Dostępne tylko dla autora postu --%>
+      <c:if test="${not empty sessionScope.loggedUser && sessionScope.loggedUser.id == post.author.id}">
+        <a href="${pageContext.request.contextPath}/post/edit/${post.id}">Edytuj</a> |
+        <a href="${pageContext.request.contextPath}/post/remove/${post.id}">Usuń</a>
+      </c:if>
+    </li>
+  </c:forEach>
+</ul>
 
 <a href="${pageContext.request.contextPath}/post/list">Powrót do listy</a>
 
