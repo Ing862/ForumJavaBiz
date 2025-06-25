@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%--header--%>
+<%@ include file="/WEB-INF/views/shared/header.jsp" %>
 <html>
 <head>
     <title>Lista postów</title>
