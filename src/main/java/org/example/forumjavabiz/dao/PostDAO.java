@@ -57,7 +57,7 @@ public class PostDAO {
 
     // Lista postów po ID użytkownika (autora)
     public List<Post> findByCreatorId(Long userId) {
-        return em.createQuery("SELECT p FROM Post p WHERE p.creator.user_id = :userId ORDER BY p.createdAt DESC", Post.class)
+        return em.createQuery("SELECT p FROM Post p WHERE p.author.user_id = :userId ORDER BY p.createdAt DESC", Post.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }
