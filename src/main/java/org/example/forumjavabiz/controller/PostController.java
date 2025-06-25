@@ -26,10 +26,8 @@ public class PostController extends HttpServlet {
     @EJB
     private PostDAO postDAO;
 
-    // TODO: Ujednolicić język w tym pliku -> polski na angielski
     // TODO: Dodać ograniczenia do dodawania postów dla zalogowanych użytkowników
     // TODO: Dodać ograniczenia dla edycji i usuwania postów
-    // TODO: Ustalić co się dzieje jeżeli post jest usunięty
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
@@ -43,13 +41,17 @@ public class PostController extends HttpServlet {
                 handleGetEditGet(request, response);
                 break;
             case "/post/remove": // Usunięcie posta
-                handlePostRemove(request, response);
+                if (pathInfo != null && pathInfo.length() > 1) {
+                    handlePostRemoveConfirm(request, response);
+                } else {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Post ID is null.");
+                }
                 break;
             case "/post/view": // Wyświetlenie konkretnego posta
                 if (pathInfo != null && pathInfo.length() > 1) {
                     handlePostView(request, response);
                 } else {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Brak ID posta.");
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Post ID is null.");
                 }
                 break;
             default:
@@ -71,7 +73,7 @@ public class PostController extends HttpServlet {
             Post post = postDAO.findById(postId);
 
             if (post == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post nie został znaleziony.");
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post was not found.");
                 return;
             }
 
@@ -79,7 +81,7 @@ public class PostController extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/post/post_view.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nieprawidłowe ID posta.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid post ID.");
         }
     }
 
@@ -92,7 +94,7 @@ public class PostController extends HttpServlet {
             if (id != null) {
                 post = postDAO.findById(id);
                 if (post == null) {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post nie został znaleziony.");
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post was not found.");
                     return;
                 }
             }
@@ -113,13 +115,13 @@ public class PostController extends HttpServlet {
 
         Long id = parseId(pathInfo);
         if (id == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nieprawidłowe ID posta do usunięcia.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid post ID for deletion.");
             return;
         }
 
         Post post = postDAO.findById(id);
         if (post == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post nie został znaleziony.");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post was not found.");
             return;
         }
 
@@ -127,11 +129,32 @@ public class PostController extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/post/list");
     }
 
+    private void handlePostRemoveConfirm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo(); // np. "/5"
+        Long id = parseId(pathInfo);
+
+        if (id == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Wrong post ID.");
+            return;
+        }
+
+        Post post = postDAO.findById(id);
+        if (post == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post was not found.");
+            return;
+        }
+
+        request.setAttribute("post", post);
+        request.getRequestDispatcher("/WEB-INF/views/post/post_remove_confirm.jsp").forward(request, response);
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
 
-        if ("/post/edit".equals(path)) {
+        if ("/topic/remove".equals(path)) {
+            handlePostRemove(request, response);
+        } else if ("/topic/edit".equals(path)) {
             handlePostEditPost(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -139,8 +162,15 @@ public class PostController extends HttpServlet {
     }
 
     private void handlePostEditPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
-        Long id = parseId(pathInfo);
+        String idParam = request.getParameter("id");
+        Long id = null;
+        if (idParam != null && !idParam.isEmpty()) {
+            try {
+                id = Long.parseLong(idParam);
+            } catch (NumberFormatException e) {
+                // log?
+            }
+        }
 
         Map<String, String> fieldToError = new HashMap<>();
         User loggedUser = (User) request.getSession().getAttribute("loggedUser");
@@ -156,26 +186,23 @@ public class PostController extends HttpServlet {
         }
 
         if (post == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Niepoprawne dane posta.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid post data.");
             return;
         }
 
-        // TODO: Ogarnięcie dodawania i edytowania bo ten if nie ma sensu :)
         if (id != null) {
             // Edycja istniejącego posta
             Post existingPost = postDAO.findById(id);
             if (existingPost == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post nie został znaleziony.");
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post was not found.");
                 return;
             }
             existingPost.setTitle(post.getTitle());
             existingPost.setContent(post.getContent());
-            post = existingPost;
+            postDAO.saveOrUpdate(existingPost);
         } else {
-            // Nowy post - autor jest już ustawiony w parsePost
+            postDAO.saveOrUpdate(post);
         }
-
-        postDAO.saveOrUpdate(post);
         response.sendRedirect(request.getContextPath() + "/post/list");
     }
 
@@ -189,13 +216,13 @@ public class PostController extends HttpServlet {
         Topic topic = new Topic();
 
         if (title == null || title.isEmpty()) {
-            fieldToError.put("title", "Tytuł jest wymagany.");
+            fieldToError.put("title", "Title is required.");
         }
         if (content == null || content.isEmpty()) {
-            fieldToError.put("content", "Treść jest wymagana.");
+            fieldToError.put("content", "Content is required.");
         }
         if (author == null) {
-            fieldToError.put("author", "Musisz być zalogowany, aby dodać posta.");
+            fieldToError.put("author", "You must be logged in.");
         }
 
         if (!fieldToError.isEmpty()) {

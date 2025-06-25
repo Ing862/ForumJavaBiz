@@ -8,6 +8,10 @@
 <h1>${title == null ? "Dodaj nowy temat" : "Edytuj temat"}</h1>
 
 <form method="post" action="${pageContext.request.contextPath}/topic/edit">
+  <c:if test="${id != null}">
+    <input type="hidden" name="id" value="${id}"/>
+  </c:if>
+
   <label for="title">Tytuł:</label><br/>
   <input type="text" id="title" name="title" value="${title != null ? title : ''}"/>
   <c:if test="${errors.title != null}">

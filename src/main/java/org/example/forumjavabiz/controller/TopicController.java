@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Temat nie powinien mieć identyczną nazwę (?)
+
 @WebServlet (name = "TopicController", urlPatterns = {
         "/topic/list",
         "/topic/edit/*",
@@ -159,8 +161,15 @@ public class TopicController extends HttpServlet {
     }
 
     private void handleTopicEditPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo();
-        Long id = parseId(pathInfo);
+        String idParam = request.getParameter("id");
+        Long id = null;
+        if (idParam != null && !idParam.isEmpty()) {
+            try {
+                id = Long.parseLong(idParam);
+            } catch (NumberFormatException e) {
+                // log?
+            }
+        }
 
         Map<String, String> fieldToError = new HashMap<>();
         User loggedUser = (User) request.getSession().getAttribute("loggedUser");
@@ -171,6 +180,9 @@ public class TopicController extends HttpServlet {
             request.setAttribute("errors", fieldToError);
             request.setAttribute("title", request.getParameter("title"));
             request.setAttribute("description", request.getParameter("description"));
+            if (id != null) {
+                request.setAttribute("id", id);
+            }
             request.getRequestDispatcher("/WEB-INF/views/topic/topic_form.jsp").forward(request, response);
             return;
         }
@@ -195,6 +207,7 @@ public class TopicController extends HttpServlet {
         }
         response.sendRedirect(request.getContextPath() + "/topic/list");
     }
+
 
     private Topic parseTopic(Map<String, String[]> paramToValue, Map<String, String> fieldToError, User author) {
         String[] titleArr = paramToValue.get("title");
