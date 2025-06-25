@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.forumjavabiz.dao.PostDAO;
+import org.example.forumjavabiz.dao.TopicDAO;
 import org.example.forumjavabiz.entity.Post;
 import org.example.forumjavabiz.entity.Topic;
 import org.example.forumjavabiz.entity.User;
@@ -25,6 +26,8 @@ import java.util.Map;
 public class PostController extends HttpServlet {
     @EJB
     private PostDAO postDAO;
+    @EJB
+    private TopicDAO topicDAO;
 
     // TODO: Dodać ograniczenia do dodawania postów dla zalogowanych użytkowników
     // TODO: Dodać ograniczenia dla edycji i usuwania postów
@@ -89,6 +92,9 @@ public class PostController extends HttpServlet {
         String pathInfo = request.getPathInfo(); // np. "/5" lub null (nowy post)
         Post post = null;
 
+        String redirect = request.getParameter("redirect");
+        request.setAttribute("redirect", redirect);
+
         if (pathInfo != null && pathInfo.length() > 1) {
             Long id = parseId(pathInfo);
             if (id != null) {
@@ -101,10 +107,16 @@ public class PostController extends HttpServlet {
         }
 
         if (post != null) {
+            // Edycja posta
             request.setAttribute("id", post.getId());
             request.setAttribute("title", post.getTitle());
             request.setAttribute("content", post.getContent());
             request.setAttribute("author", post.getAuthor());
+        } else {
+            String topicIdParam = request.getParameter("topicId");
+            if (topicIdParam != null) {
+                request.setAttribute("topicId", topicIdParam);
+            }
         }
 
         request.getRequestDispatcher("/WEB-INF/views/post/post_form.jsp").forward(request, response);
@@ -152,9 +164,9 @@ public class PostController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
 
-        if ("/topic/remove".equals(path)) {
+        if ("/post/remove".equals(path)) {
             handlePostRemove(request, response);
-        } else if ("/topic/edit".equals(path)) {
+        } else if ("/post/edit".equals(path)) {
             handlePostEditPost(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -168,7 +180,7 @@ public class PostController extends HttpServlet {
             try {
                 id = Long.parseLong(idParam);
             } catch (NumberFormatException e) {
-                // log?
+                // log? Możesz dodać logowanie błędu
             }
         }
 
@@ -177,10 +189,16 @@ public class PostController extends HttpServlet {
 
         Post post = parsePost(request.getParameterMap(), fieldToError, loggedUser);
 
+        // Dodaj przekazanie topicId (ważne!)
+        String topicIdParam = request.getParameter("topicId");
+        request.setAttribute("topicId", topicIdParam);
+
         if (!fieldToError.isEmpty()) {
             request.setAttribute("errors", fieldToError);
-            request.setAttribute("title", request.getParameter("title"));
             request.setAttribute("content", request.getParameter("content"));
+            if (id != null) {
+                request.setAttribute("id", id);
+            }
             request.getRequestDispatcher("/WEB-INF/views/post/post_form.jsp").forward(request, response);
             return;
         }
@@ -197,23 +215,38 @@ public class PostController extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Post was not found.");
                 return;
             }
-            existingPost.setTitle(post.getTitle());
             existingPost.setContent(post.getContent());
             postDAO.saveOrUpdate(existingPost);
         } else {
             postDAO.saveOrUpdate(post);
         }
-        response.sendRedirect(request.getContextPath() + "/post/list");
+
+        // Wraca do listy postów w temacie
+        Long topicId = (id != null) ? postDAO.findById(id).getTopic().getId() : post.getTopic().getId();
+        response.sendRedirect(request.getContextPath() + "/topic/view/" + topicId);
+
     }
+
 
     private Post parsePost(Map<String, String[]> paramToValue, Map<String, String> fieldToError, User author) {
         String[] titleArr = paramToValue.get("title");
         String[] contentArr = paramToValue.get("content");
+        String[] topicIdArr = paramToValue.get("topicId");
 
         String title = (titleArr != null && titleArr.length > 0) ? titleArr[0].trim() : null;
         String content = (contentArr != null && contentArr.length > 0) ? contentArr[0].trim() : null;
 
-        Topic topic = new Topic();
+        Topic topic = null;
+        if (topicIdArr != null && topicIdArr.length > 0) {
+            try {
+                Long topicId = Long.parseLong(topicIdArr[0]);
+                topic = topicDAO.findById(topicId);
+            } catch (NumberFormatException e) {
+                fieldToError.put("topicId", "Invalid topic.");
+            }
+        } else {
+            fieldToError.put("topicId", "Topic is required.");
+        }
 
         if (title == null || title.isEmpty()) {
             fieldToError.put("title", "Title is required.");
@@ -223,6 +256,9 @@ public class PostController extends HttpServlet {
         }
         if (author == null) {
             fieldToError.put("author", "You must be logged in.");
+        }
+        if (topic == null) {
+            fieldToError.put("topic", "Topic not found.");
         }
 
         if (!fieldToError.isEmpty()) {

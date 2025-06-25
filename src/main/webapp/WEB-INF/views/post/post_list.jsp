@@ -8,12 +8,12 @@
 <body>
 <h1>Lista postów</h1>
 
-<a href="${pageContext.request.contextPath}/post/edit">Dodaj nowy post</a>
+<%--<a href="${pageContext.request.contextPath}/post/edit">Dodaj nowy post</a>--%>
 
 <ul>
     <c:forEach var="post" items="${postList}">
         <li>
-            <strong>${post.title}</strong> - ${post.author.username}
+            <strong>${post.title}</strong> - ${post.author.username} - ${post.topic.title}
             <br/>
             <a href="${pageContext.request.contextPath}/post/view/${post.id}">Zobacz</a> |
             <%--      Dostępne tylko dla autora postu --%>

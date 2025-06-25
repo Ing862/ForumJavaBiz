@@ -6,7 +6,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.forumjavabiz.dao.PostDAO;
 import org.example.forumjavabiz.dao.TopicDAO;
+import org.example.forumjavabiz.entity.Post;
 import org.example.forumjavabiz.entity.Topic;
 import org.example.forumjavabiz.entity.User;
 
@@ -26,6 +28,8 @@ import java.util.Map;
 public class TopicController extends HttpServlet {
     @EJB
     private TopicDAO topicDAO;
+    @EJB
+    private PostDAO postDAO;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
@@ -65,6 +69,10 @@ public class TopicController extends HttpServlet {
 
     private void handleTopicView(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo(); // np. "/5"
+        Long id = parseId(pathInfo);
+
+        List<Post> posts = postDAO.findByTopicId(id);
+        request.setAttribute("postList", posts);
 
         try {
             Long topicId = Long.parseLong(pathInfo.substring(1));
