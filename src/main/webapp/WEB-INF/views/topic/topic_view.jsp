@@ -31,11 +31,11 @@
     <c:choose>
         <c:when test="${not empty sessionScope.loggedUser}">
             <a href="${pageContext.request.contextPath}/post/edit?topicId=${topic.id}&redirect=${pageContext.request.requestURI}">
-                <button style="padding: 3px; border-radius: 8px;">Create new post</button>
+                <button style="padding: 6px 12px; border-radius: 8px;">Create new post</button>
             </a>
         </c:when>
         <c:otherwise>
-            <p style="color: red;">You must be logged in to create a new post in this toppic.</p>
+            <p style="color: red;">You must be logged in to create a new post in this topic.</p>
         </c:otherwise>
     </c:choose>
 </div>
