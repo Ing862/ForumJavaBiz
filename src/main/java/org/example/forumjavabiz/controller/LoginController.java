@@ -28,6 +28,7 @@ public class LoginController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/index.jsp"); // Przekierowuje na strone index
         } else { // Błąd logowania
             request.setAttribute("loginError", "Invalid login or password");
+            request.setAttribute("registerError", "Username already exists.");
             request.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(request, response);
         }
     }

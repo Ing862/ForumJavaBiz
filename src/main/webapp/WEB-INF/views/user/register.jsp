@@ -12,6 +12,11 @@
         <h1>Register</h1>
     </div>
 
+    <!-- Błąd rejestracji -->
+    <c:if test="${not empty registerError}">
+        <p style="color: red; text-align: center; margin-top: 5px; margin-bottom: 5px">${registerError}</p>
+    </c:if>
+
     <form method="post" action="register" style="padding: 0 10px;">
         <div style="display: flex; flex-direction: column; gap: 10px;">
             <input name="username" placeholder="Username" required />

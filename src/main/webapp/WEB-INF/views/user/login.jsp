@@ -13,6 +13,10 @@
         <h1>Login</h1>
     </div>
 
+    <c:if test="${not empty loginError}">
+        <p style="color:red; text-align: center; margin-top: 5px; margin-bottom: 5px">${loginError} Please try again</p>
+    </c:if>
+
     <form method="post" action="login" style="padding: 0 10px;">
         <div style="display: flex; flex-direction: column; gap: 10px;">
             <input name="username" placeholder="Username" required />
@@ -20,9 +24,6 @@
             <button type="submit">Login</button>
         </div>
 
-        <c:if test="${param.error == 'true'}">
-            <p style="color:red; margin-top: 10px;">Invalid login</p>
-        </c:if>
     </form>
 
     <div style="text-align: center; margin-top: 50px; margin-bottom: 50px;">

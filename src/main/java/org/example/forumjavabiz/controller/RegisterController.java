@@ -25,13 +25,16 @@ public class RegisterController extends HttpServlet {
         user.setPassword(password); // dodać haszowanie
         user.setRole("USER");
 
-        if (!userDAO.usernameExists("anna")) {
+        if (!userDAO.usernameExists(username)) {
             userDAO.register(user);
+            request.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(request, response);
+
         } else {
             // komunikat: użytkownik już istnieje
+            request.setAttribute("registerError", "Username already exists.");
+            request.getRequestDispatcher("/WEB-INF/views/user/register.jsp").forward(request, response);
         }
 
-        request.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(request, response);
     }
 
     @Override

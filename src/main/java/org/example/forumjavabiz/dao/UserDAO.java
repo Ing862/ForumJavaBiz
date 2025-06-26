@@ -61,10 +61,4 @@ public class UserDAO {
                 .getSingleResult() > 0;
     }
 
-    // TODO: Dodać wylogowanie
-
-//    public boolean checkPassword(User user, String inputPassword) {
-//        return user != null && user.getPassword().equals(inputPassword)
-//
-//    }
 }
