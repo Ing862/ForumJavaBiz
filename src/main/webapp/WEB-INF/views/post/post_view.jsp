@@ -1,34 +1,32 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%--header--%>
 <%@ include file="/WEB-INF/views/shared/header.jsp" %>
 <html>
 <head>
-  <title>Podgląd posta</title>
+  <title>Post details</title>
 </head>
 <body>
-<h1>${post.title}</h1>
-<p><strong>Autor:</strong> ${post.author.username}</p>
-<p>${post.content}</p>
 
-<ul>
-  <c:forEach var="post" items="${postList}">
-    <li>
-      <strong>${post.title}</strong> - ${post.author.username}
-      <br/>
-      <a href="${pageContext.request.contextPath}/post/view/${post.id}">Zobacz</a> |
-        <%--      Dostępne tylko dla autora postu --%>
-      <c:if test="${not empty sessionScope.loggedUser && sessionScope.loggedUser.id == post.author.id}">
-        <a href="${pageContext.request.contextPath}/post/edit/${post.id}">Edytuj</a> |
-        <a href="${pageContext.request.contextPath}/post/remove/${post.id}">Usuń</a>
-      </c:if>
-    </li>
-  </c:forEach>
-</ul>
+<div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+  <h1>${post.title}</h1>
+</div>
 
-<a href="${pageContext.request.contextPath}/topic/view/${post.topic.id}">Powrót do listy postów w temacie</a>
+<div style="margin-left: 40px; display: flex; gap: 20px; align-items: center;">
+  <p><strong>Author:</strong> ${post.author.username}</p>
+  <p><strong>Date:</strong> ${post.creationDate}</p>
+</div>
+
+<div style="padding: 0 10px; margin-left: 40px; margin-top: 10px; margin-bottom: 20px;">
+  <p>${post.content}</p>
+</div>
+
+<div style="text-align: center; margin-top: 20px; margin-bottom: 40px;">
+  <a href="${pageContext.request.contextPath}/topic/view/${post.topic.id}">
+    <button style="padding: 6px 12px; border-radius: 8px;">Back to topic</button>
+  </a>
+</div>
+
 
 
 </body>

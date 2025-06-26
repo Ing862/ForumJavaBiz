@@ -33,7 +33,7 @@ public class Topic {
         this.title = title;
         this.description = description;
         this.author = author;
-        this.creationDate = creationDate;
+        this.creationDate = LocalDateTime.now();
     }
 
     public Long getId() {

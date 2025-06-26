@@ -1,43 +1,72 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--header--%>
 <%@ include file="/WEB-INF/views/shared/header.jsp" %>
 <html>
 <head>
-    <title>Podgląd tematu</title>
+    <title>Topic details</title>
 </head>
 <body>
-<h1>${topic.title}</h1>
-<p><strong>Autor:</strong> ${topic.author.username}</p>
-<p>${topic.description}</p>
 
-<a href="${pageContext.request.contextPath}/topic/list">Powrót do listy</a>
+<div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+    <h1>${topic.title}</h1>
+</div>
 
-<h2>Posts in this topic</h2>
+<div style="margin-left: 40px; display: flex; gap: 20px; align-items: center;">
+    <p><strong>Author:</strong> ${topic.author.username}</p>
+    <p><strong>Date:</strong> ${topic.creationDate}
+<%--        <fmt:formatDate value="${topic.creationDate}" pattern="dd.MM.yyyy HH:mm"/>--%>
+    </p>
+</div>
 
-<c:choose>
-    <c:when test="${empty postList}">
-        <p>No posts in this topic yet.</p>
-    </c:when>
-    <c:otherwise>
-        <ul>
-            <c:forEach var="post" items="${postList}">
-                <li>
-                    <strong>${post.title}</strong> – ${post.author.username}<br/>
-                    <a href="${pageContext.request.contextPath}/post/view/${post.id}">View</a>
-                    <c:if test="${not empty sessionScope.loggedUser && sessionScope.loggedUser.id == post.author.id}">
-                        | <a href="${pageContext.request.contextPath}/post/edit/${post.id}">Edit</a>
-                        | <a href="${pageContext.request.contextPath}/post/remove/${post.id}">Delete</a>
-                    </c:if>
-                </li>
-            </c:forEach>
-        </ul>
-    </c:otherwise>
-</c:choose>
+<div style="padding: 0 10px; margin-left: 40px; margin-top: 10px; margin-bottom: 20px;">
+    <p>${topic.description}</p>
+</div>
 
-<a href="${pageContext.request.contextPath}/post/edit?topicId=${topic.id}&redirect=${pageContext.request.requestURI}">
-    <button>Add new post</button>
-</a>
+<div style="text-align: center; margin-top: 20px; margin-bottom: 40px;">
+    <%--    <a href="${pageContext.request.contextPath}/post/edit?topicId=${topic.id}&redirect=${pageContext.request.requestURI}">--%>
+    <%--        <button style="padding: 6px 12px; border-radius: 8px;">Add new post</button>--%>
+    <%--    </a>--%>
+
+    <c:choose>
+        <c:when test="${not empty sessionScope.loggedUser}">
+            <a href="${pageContext.request.contextPath}/post/edit?topicId=${topic.id}&redirect=${pageContext.request.requestURI}">
+                <button style="padding: 3px; border-radius: 8px;">Create new post</button>
+            </a>
+        </c:when>
+        <c:otherwise>
+            <p style="color: red;">You must be logged in to create a new post in this toppic.</p>
+        </c:otherwise>
+    </c:choose>
+</div>
+
+<h2 style="margin-left: 40px; margin-bottom: 20px">Posts in this topic</h2>
+
+<div style="padding: 0 10px; margin-left: 40px;">
+    <c:choose>
+        <c:when test="${empty postList}">
+            <p>No posts in this topic yet.</p>
+        </c:when>
+        <c:otherwise>
+            <ul style="padding: 0 10px;">
+                <c:forEach var="post" items="${postList}">
+                    <li style="margin-bottom: 15px;">
+                        <a href="${pageContext.request.contextPath}/post/view/${post.id}">
+                            <strong>${post.title}</strong>
+                        </a>
+                        by ${post.author.username}
+                        <br/>
+                        <c:if test="${not empty sessionScope.loggedUser && sessionScope.loggedUser.id == post.author.id}">
+                            | <a href="${pageContext.request.contextPath}/post/edit/${post.id}">Edit</a>
+                            | <a href="${pageContext.request.contextPath}/post/remove/${post.id}">Delete</a>
+                        </c:if>
+                    </li>
+                </c:forEach>
+            </ul>
+        </c:otherwise>
+    </c:choose>
+</div>
+
 
 </body>
 </html>

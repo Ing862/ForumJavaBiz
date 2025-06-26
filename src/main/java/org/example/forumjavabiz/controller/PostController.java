@@ -189,13 +189,14 @@ public class PostController extends HttpServlet {
 
         Post post = parsePost(request.getParameterMap(), fieldToError, loggedUser);
 
-        // Dodaj przekazanie topicId (ważne!)
+        // Przekazanie topicId
         String topicIdParam = request.getParameter("topicId");
         request.setAttribute("topicId", topicIdParam);
 
         if (!fieldToError.isEmpty()) {
             request.setAttribute("errors", fieldToError);
             request.setAttribute("content", request.getParameter("content"));
+            request.setAttribute("title", request.getParameter("title"));
             if (id != null) {
                 request.setAttribute("id", id);
             }
@@ -216,6 +217,7 @@ public class PostController extends HttpServlet {
                 return;
             }
             existingPost.setContent(post.getContent());
+            existingPost.setTitle(post.getTitle());
             postDAO.saveOrUpdate(existingPost);
         } else {
             postDAO.saveOrUpdate(post);

@@ -22,7 +22,7 @@
         <div>
             <nav>
                 <a href="${pageContext.request.contextPath}/index.jsp" style="color:white; margin-right:15px;">Home</a>
-                <a href="topic/list" style="color:white; margin-right:15px;">Topics</a>
+                <a href="${pageContext.request.contextPath}/topic/list" style="color:white; margin-right:15px;">Topics</a>
             </nav>
         </div>
 
