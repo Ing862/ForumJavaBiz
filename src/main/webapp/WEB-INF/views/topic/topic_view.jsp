@@ -56,7 +56,7 @@
                         </a>
                         by ${post.author.username}
                         <br/>
-                        <c:if test="${not empty sessionScope.loggedUser && sessionScope.loggedUser.id == post.author.id}">
+                        <c:if test="${not empty sessionScope.loggedUser && (sessionScope.loggedUser.id == post.author.id || sessionScope.loggedUser.role eq 'ADMIN')}">
                             | <a href="${pageContext.request.contextPath}/post/edit/${post.id}">Edit</a>
                             | <a href="${pageContext.request.contextPath}/post/remove/${post.id}">Delete</a>
                         </c:if>

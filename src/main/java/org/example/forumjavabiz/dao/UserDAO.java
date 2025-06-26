@@ -61,4 +61,10 @@ public class UserDAO {
                 .getSingleResult() > 0;
     }
 
+    public boolean isAdmin(User user) {
+        if  (user.getRole().equals("ADMIN")) {
+            return true;
+        }
+        return false;
+    }
 }
